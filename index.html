@@ -22,21 +22,27 @@ Here is the complete HTML code for your LEGALFORT website:
             </div>
 
 
-            <nav class="nav">
+            <nav class="nav" id="mobileNav">
                 <a href="#about">About</a>
                 <a href="#services">Services</a>
                 <a href="#reviews">Reviews</a>
                 <a href="#contact">Contact</a>
                 <button class="btn" onclick="openBookingModal()">Book Consultation</button>
             </nav>
-            <div class="mobile-menu-btn">
+
+            
+            <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="Open menu" aria-controls="mobileNav" aria-expanded="false">
                 <span></span>
                 <span></span>
                 <span></span>
-            </div>
+            </button>
+
+        
         </div>
     </header>
 
+        <!-- Mobile hamburger + menu -->
+       
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
@@ -623,6 +629,43 @@ Here is the complete HTML code for your LEGALFORT website:
                     });
                 }
             });
+        });
+
+        // Mobile nav toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const headerEl = document.getElementById('header');
+        const mobileNav = document.getElementById('mobileNav');
+
+        function setMobileMenuOpen(isOpen) {
+            headerEl.classList.toggle('nav-open', isOpen);
+            mobileMenuBtn.setAttribute('aria-expanded', String(isOpen));
+            mobileMenuBtn.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+        }
+
+        mobileMenuBtn?.addEventListener('click', () => {
+            const isOpen = headerEl.classList.contains('nav-open');
+            setMobileMenuOpen(!isOpen);
+        });
+
+        // Close menu when selecting a link (mobile)
+        mobileNav?.querySelectorAll('a[href^="#"]').forEach(a => {
+            a.addEventListener('click', () => setMobileMenuOpen(false));
+        });
+
+        // Close menu if switching to desktop layout
+        window.addEventListener('resize', () => {
+            if (window.innerWidth > 768) setMobileMenuOpen(false);
+        });
+
+        // Close menu on outside click / Escape
+        document.addEventListener('click', (e) => {
+            if (!headerEl.classList.contains('nav-open')) return;
+            if (headerEl.contains(e.target)) return;
+            setMobileMenuOpen(false);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') setMobileMenuOpen(false);
         });
 
         // Set minimum date for booking to today
